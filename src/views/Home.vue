@@ -1,15 +1,19 @@
 <template>
-  <hello-world />
+  <div>
+    <!-- <Login />
+    <Register />
+    <p class="">
+      Don't have an account? <router-link to="/register">Register</router-link>
+    </p> -->
+  </div>
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
-
-  export default {
-    name: 'Home',
-
-    components: {
-      HelloWorld,
-    },
+export default {
+  data: () => {
+    return {
+      isLogin: 1,
+    }
   }
+};
 </script>
