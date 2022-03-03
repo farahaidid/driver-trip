@@ -26,6 +26,16 @@
           >Forget Password</v-btn
         >
       </form>
+      <div class="mt-8">
+        <h3 class="mb-6">OR</h3>
+        <p>Login With</p>
+        <img
+          class="google-icon"
+          src="../../assets/Google__G__Logo.svg"
+          @click="googleAuth"
+          alt=""
+        />
+      </div>
       <p class="mt-8">
         Don't have an account?
         <router-link to="/register">Register</router-link>
@@ -49,8 +59,14 @@
 </template>
 
 <script>
-import * as firebase from "@firebase/auth";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import "@firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 
 export default {
   data: () => ({
@@ -73,9 +89,9 @@ export default {
 
   methods: {
     submited() {
-      const auth = firebase.getAuth();
-      firebase
-        .signInWithEmailAndPassword(auth, this.email, this.password)
+      const auth = getAuth();
+
+      signInWithEmailAndPassword(auth, this.email, this.password)
         .then((data) => {
           console.log(data);
           this.$router.replace({ name: "dashboard" });
@@ -94,6 +110,17 @@ export default {
         .catch((error) => {
           console.log(error);
           // ..
+        });
+    },
+    googleAuth() {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

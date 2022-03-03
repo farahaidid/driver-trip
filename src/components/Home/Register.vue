@@ -23,6 +23,16 @@
 
         <v-btn type="submit" class="mr-4" color="success"> submit </v-btn>
       </form>
+      <div class="mt-8">
+        <h3 class="mb-6">OR</h3>
+        <p>Register With</p>
+        <img
+          class="google-icon"
+          src="../../assets/Google__G__Logo.svg"
+          @click="googleAuth"
+          alt=""
+        />
+      </div>
       <p class="mt-8">
         Already have an account? <router-link to="/">Log In</router-link>
       </p>
@@ -31,7 +41,14 @@
 </template>
 
 <script>
-import * as firebase from "firebase/auth";
+// import * as firebase from "firebase/app";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "@firebase/auth";
+require("firebase/auth");
 
 export default {
   data: () => ({
@@ -52,12 +69,22 @@ export default {
 
   methods: {
     submited() {
-      const auth = firebase.getAuth();
-      firebase
-        .createUserWithEmailAndPassword(auth, this.email, this.password)
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, this.email, this.password)
         .then((data) => {
           console.log(data);
           this.$router.replace({ name: "dashboard" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    googleAuth() {
+      const googleProvider = new GoogleAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, googleProvider)
+        .then((data) => {
+          console.log(data);
         })
         .catch((error) => {
           console.log(error);
