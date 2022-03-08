@@ -1,0 +1,9 @@
+1. get data from driver-trip page [done]
+2. all the data should store as their id [done]
+3. show those data in report page [done]
+4. limit data upto 15 [done]
+5. convert ids into original data
+6. search [done]
+7. add time stamps to data
+8. order data by time stamps
+9. pagination

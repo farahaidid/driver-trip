@@ -7,7 +7,7 @@ import vuetify from './plugins/vuetify'
 Vue.config.productionTip = false
 
 import { initializeApp } from "firebase/app";
-// import * as firebase from "firebase/app";
+// import { getFirestore } from "firebase/firestore";
 
 initializeApp({
   apiKey: "AIzaSyA1gsOnxCTNzCpEpF7OwUCLgTz4HhPRxX4",

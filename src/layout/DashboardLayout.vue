@@ -36,15 +36,15 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item>
+          <v-list-item to="/dashboard/driver-trip">
             <v-list-item-title>
-              <a href="driver-trip" class="link">Driver Trip</a>
+              Driver Trip
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item to="/dashboard/report">
             <v-list-item-title>
-              <a href="report" class="link">Report</a>
+              Report
             </v-list-item-title>
           </v-list-item>
         </v-list-item-group>
