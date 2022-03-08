@@ -38,7 +38,9 @@
           <v-btn dark elevation="0" class="my-auto" @click="searchHandle">
             Search
           </v-btn>
-          <v-btn dark elevation="0" class="ml-4 my-auto"> Export Excel </v-btn>
+          <v-btn dark elevation="0" class="ml-4 my-auto" @click="downloadFile">
+            Export Excel
+          </v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -106,6 +108,7 @@
 </template>
 
 <script>
+const xlsx = require("json-as-xlsx");
 import {
   collection,
   deleteDoc,
@@ -157,8 +160,11 @@ export default {
   },
   methods: {
     sumField(key) {
-        // sum data in give key (property)
-        return this.reportData.reduce((a, b) => parseInt(a) + (parseInt(b[key]) || 0), 0)
+      // sum data in give key (property)
+      return this.reportData.reduce(
+        (a, b) => parseInt(a) + (parseInt(b[key]) || 0),
+        0
+      );
     },
     deleteReport(id) {
       console.log(id);
@@ -175,29 +181,70 @@ export default {
       let q1 = query(driverTripsRef, where("driver", "in", this.driver));
       let q2 = query(driverTripsRef, where("vehicle", "in", this.vehicle));
 
-      // let q1;
-      // let q2;
-
-      // if (this.driver.length > 0) {
-      //   q1 = query(driverTripsRef, where('driver','in', this.driver));
-      // }
-      // if (this.vehicle.length > 0) {
-      //   q2 = query(driverTripsRef, where('vehicle','in', this.vehicle))
-      // }
-      // else if (this.vehicle.length > 0 && this.driver.length > 0) {
-      //   p.push(where('driver','in', this.driver), where('vehicle','in', this.vehicle))
-      // }
-
       console.log(this.driver, this.vehicle);
 
-      // let q = query(driverTripsRef, ...p);
-
       let g = await getDocs(q1, q2);
-      // console.log(g);
       this.reportData = g.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+    },
+    async downloadFile() {
+      let data = [
+        {
+          sheet: "Report Data",
+          columns: [
+            { label: "Driver", value: "driver" },
+            { label: "Vehicle", value: "vehicle" },
+            { label: "Company", value: "company" },
+            { label: "Do No.", value: "doNo" },
+            { label: "From", value: "from" },
+            { label: "To", value: "to" },
+            { label: "From Date", value: "fromDate" },
+            { label: "To Date", value: "toDate" },
+            { label: "Ton", value: "ton" },
+            { label: "Price", value: "price" },
+            { label: "Net Total", value: "netTotal" },
+            { label: "Cash Diesel", value: "cashDiesel" },
+            { label: "Cash Toll", value: "cashToll" },
+            { label: "Naik Tarun", value: "naikTarun" },
+            { label: "H/P", value: "hp" },
+            { label: "Allown", value: "allown" },
+            { label: "Tyre", value: "tyre" },
+            { label: "Others Repair", value: "othersRepair" },
+            { label: "Remarks", value: "remarks" },
+          ],
+          content: this.reportData.map(a => {
+            return {
+              driver: a.driver,
+              vehicle: a.vehicle,
+              company: a.company,
+              doNo: a.doNo,
+              from : a.from,
+              to : a.to,
+              fromDate : a.fromDate,
+              toDate : a.toDate,
+              ton : a.ton,
+              price : a.price,
+              netTotal : a.netTotal,
+              cashDiesel : a.cashDiesel,
+              cashToll : a.cashToll,
+              naikTarun : a.naikTarun,
+              hp : a.hp,
+              allown : a.allown,
+              tyre : a.tyre,
+              othersRepair : a.othersRepair,
+              remarks : a.remarks,
+            }
+          })
+        },
+      ];
+      let settings = {
+        fileName: "MySpreadsheet",
+      };
+      console.log(data);
+      await this.$nextTick()
+      xlsx(data, settings);
     },
   },
   async created() {
