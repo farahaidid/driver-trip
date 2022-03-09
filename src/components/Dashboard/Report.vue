@@ -155,8 +155,6 @@ export default {
         { text: "Others Repair", value: "othersRepair" },
         { text: "Remarks", value: "remarks" },
       ],
-      field1Total: 10,
-      field2Total: 70,
     };
   },
   methods: {
@@ -192,7 +190,9 @@ export default {
     },
     async downloadFile() {
       let data = [
-        { com: 'COM', from: 'From', to: 'To', rate: 'Rate(RM)' },
+        { DRIVER: 'D1', VEHICLE: 'V1', COM: 'COM1', FROM: 'From1', TO: 'To1', Ton: '56' },
+        { DRIVER: 'D2', VEHICLE: 'V2', COM: 'COM2', FROM: 'From2', TO: 'To2', Ton: '46' },
+        { DRIVER: 'D3', VEHICLE: 'V3', COM: 'COM3', FROM: 'From3', TO: 'To3', Ton: '36' },
       ]
       var ws = XLSX.utils.json_to_sheet(data);
       var wb = XLSX.utils.book_new();

@@ -71,8 +71,7 @@ export default {
     submited() {
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then((data) => {
-          console.log(data);
+        .then(() => {
           this.$router.replace({ name: "dashboard" });
         })
         .catch((error) => {
@@ -83,8 +82,8 @@ export default {
       const googleProvider = new GoogleAuthProvider();
       const auth = getAuth();
       signInWithPopup(auth, googleProvider)
-        .then((data) => {
-          console.log(data);
+        .then(() => {
+          this.$router.replace({ name: "dashboard" });
         })
         .catch((error) => {
           console.log(error);

@@ -118,6 +118,7 @@ export default {
       signInWithPopup(auth, provider)
         .then((data) => {
           console.log(data);
+          this.$router.replace({ name: "dashboard" });
         })
         .catch((error) => {
           console.log(error);
@@ -127,4 +128,7 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="sass">
+.google-icon
+  cursor: pointer
+</style>
