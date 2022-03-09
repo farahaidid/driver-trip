@@ -108,7 +108,8 @@
 </template>
 
 <script>
-const xlsx = require("json-as-xlsx");
+// const xlsx = require("json-as-xlsx");
+import * as XLSX from 'xlsx'
 import {
   collection,
   deleteDoc,
@@ -191,60 +192,18 @@ export default {
     },
     async downloadFile() {
       let data = [
-        {
-          sheet: "Report Data",
-          columns: [
-            { label: "Driver", value: "driver" },
-            { label: "Vehicle", value: "vehicle" },
-            { label: "Company", value: "company" },
-            { label: "Do No.", value: "doNo" },
-            { label: "From", value: "from" },
-            { label: "To", value: "to" },
-            { label: "From Date", value: "fromDate" },
-            { label: "To Date", value: "toDate" },
-            { label: "Ton", value: "ton" },
-            { label: "Price", value: "price" },
-            { label: "Net Total", value: "netTotal" },
-            { label: "Cash Diesel", value: "cashDiesel" },
-            { label: "Cash Toll", value: "cashToll" },
-            { label: "Naik Tarun", value: "naikTarun" },
-            { label: "H/P", value: "hp" },
-            { label: "Allown", value: "allown" },
-            { label: "Tyre", value: "tyre" },
-            { label: "Others Repair", value: "othersRepair" },
-            { label: "Remarks", value: "remarks" },
-          ],
-          content: this.reportData.map(a => {
-            return {
-              driver: a.driver,
-              vehicle: a.vehicle,
-              company: a.company,
-              doNo: a.doNo,
-              from : a.from,
-              to : a.to,
-              fromDate : a.fromDate,
-              toDate : a.toDate,
-              ton : a.ton,
-              price : a.price,
-              netTotal : a.netTotal,
-              cashDiesel : a.cashDiesel,
-              cashToll : a.cashToll,
-              naikTarun : a.naikTarun,
-              hp : a.hp,
-              allown : a.allown,
-              tyre : a.tyre,
-              othersRepair : a.othersRepair,
-              remarks : a.remarks,
-            }
-          })
-        },
-      ];
-      let settings = {
-        fileName: "MySpreadsheet",
-      };
-      console.log(data);
-      await this.$nextTick()
-      xlsx(data, settings);
+        { com: 'COM', from: 'From', to: 'To', rate: 'Rate(RM)' },
+      ]
+      var ws = XLSX.utils.json_to_sheet(data);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Report");
+      var wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+      var blob = new Blob([wbout],{type:"application/octet-stream"});
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      var fileName = 'report.xlsx';
+      link.download = fileName;
+      link.click();
     },
   },
   async created() {
