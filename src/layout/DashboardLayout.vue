@@ -1,6 +1,5 @@
 <template>
   <v-card class="mx-auto rounded-0 dashboard-layout">
-
     <v-app-bar class="px-12" color="" dark prominent>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
@@ -14,12 +13,11 @@
         </template>
 
         <v-list class="mt-12">
-          <v-list-item
-            v-for="option in userOptions"
-            :key="option"
-            @click="() => {}"
-          >
-            <v-list-item-title>{{ option }}</v-list-item-title>
+          <v-list-item>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logOut">
+            <v-list-item-title>Log Out</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -37,15 +35,11 @@
           active-class="deep-purple--text text--accent-4"
         >
           <v-list-item to="/dashboard/driver-trip">
-            <v-list-item-title>
-              Driver Trip
-            </v-list-item-title>
+            <v-list-item-title> Driver Trip </v-list-item-title>
           </v-list-item>
 
           <v-list-item to="/dashboard/report">
-            <v-list-item-title>
-              Report
-            </v-list-item-title>
+            <v-list-item-title> Report </v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -56,12 +50,26 @@
 </template>
 
 <script>
+import { getAuth, signOut } from '@firebase/auth';
 export default {
   data: () => ({
     drawer: false,
     group: null,
-    userOptions: ['Settings', 'Log Out'],
+    userOptions: ["Settings", "Log Out"],
   }),
+  methods: {
+    logOut() {
+      const auth = getAuth();
+
+      signOut(auth)
+        .then(() => {
+          this.$router.replace({ name: "login" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
   watch: {
     group() {
       this.drawer = false;
@@ -73,7 +81,7 @@ export default {
 <style lang="sass" scoped>
 .dashboard-layout
   height: 100vh
-  
+
 ::v-deep .v-card
   border-radius: 0px !important
 
@@ -94,6 +102,6 @@ export default {
 
 .link
   text-decoration: none !important
-  color: black 
+  color: black
   font-size: 18px
 </style>

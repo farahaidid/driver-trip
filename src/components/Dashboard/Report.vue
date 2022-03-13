@@ -38,6 +38,9 @@
           <v-btn dark elevation="0" class="my-auto" @click="searchHandle">
             Search
           </v-btn>
+          <v-btn dark elevation="0" class="ml-4 my-auto" @click="clearSearchHandle">
+            Clear Search
+          </v-btn>
           <v-btn dark elevation="0" class="ml-4 my-auto" @click="downloadFile">
             Export Excel
           </v-btn>
@@ -109,7 +112,7 @@
 
 <script>
 // const xlsx = require("json-as-xlsx");
-import * as XLSX from 'xlsx'
+import * as XLSX from "xlsx";
 import {
   collection,
   deleteDoc,
@@ -177,31 +180,94 @@ export default {
 
       const driverTripsRef = collection(db, "driver-trips");
 
-      let q1 = query(driverTripsRef, where("driver", "in", this.driver));
-      let q2 = query(driverTripsRef, where("vehicle", "in", this.vehicle));
+      let g;
 
       console.log(this.driver, this.vehicle);
 
-      let g = await getDocs(q1, q2);
+      if (this.vehicle.length > 0 && this.driver.length > 0) {
+        let q1 = query(driverTripsRef, where("driver", "in", this.driver));
+        let q2 = query(driverTripsRef, where("vehicle", "in", this.vehicle));
+        g = await getDocs(q1, q2);
+      } else if (this.driver.length > 0 && this.vehicle.length == 0) {
+        let q1 = query(driverTripsRef, where("driver", "in", this.driver));
+        g = await getDocs(q1);
+      } else if (this.vehicle.length > 0 && this.driver.length == 0) {
+        let q2 = query(driverTripsRef, where("vehicle", "in", this.vehicle));
+        g = await getDocs(q2);
+      }
+
       this.reportData = g.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    },
+    async clearSearchHandle() {
+      const db = getFirestore();
+
+      let driverTripsRef = collection(db, "driver-trips");
+      let q = query(driverTripsRef, orderBy("created", "desc"));
+
+      let g = await getDocs(q);
+      let h = await getDocs(driverTripsRef);
+
+      const dataList = g.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      this.reportData = dataList;
+      this.totalPage = Math.ceil(h.size / 15);
+      this.totalData = h.size;
+
+      // GET DRIVERS & VEHICLES
+
+      const driversCollection = await getDocs(collection(db, "drivers"));
+      this.drivers = driversCollection.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const vehiclesCollection = await getDocs(collection(db, "vehicles"));
+      this.vehicles = vehiclesCollection.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
     },
     async downloadFile() {
       let data = [
-        { DRIVER: 'D1', VEHICLE: 'V1', COM: 'COM1', FROM: 'From1', TO: 'To1', Ton: '56' },
-        { DRIVER: 'D2', VEHICLE: 'V2', COM: 'COM2', FROM: 'From2', TO: 'To2', Ton: '46' },
-        { DRIVER: 'D3', VEHICLE: 'V3', COM: 'COM3', FROM: 'From3', TO: 'To3', Ton: '36' },
-      ]
+        {
+          DRIVER: "D1",
+          VEHICLE: "V1",
+          COM: "COM1",
+          FROM: "From1",
+          TO: "To1",
+          Ton: "56",
+        },
+        {
+          DRIVER: "D2",
+          VEHICLE: "V2",
+          COM: "COM2",
+          FROM: "From2",
+          TO: "To2",
+          Ton: "46",
+        },
+        {
+          DRIVER: "D3",
+          VEHICLE: "V3",
+          COM: "COM3",
+          FROM: "From3",
+          TO: "To3",
+          Ton: "36",
+        },
+      ];
       var ws = XLSX.utils.json_to_sheet(data);
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Report");
-      var wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
-      var blob = new Blob([wbout],{type:"application/octet-stream"});
-      var link = document.createElement('a');
+      var wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      var blob = new Blob([wbout], { type: "application/octet-stream" });
+      var link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      var fileName = 'report.xlsx';
+      var fileName = "report.xlsx";
       link.download = fileName;
       link.click();
     },
