@@ -26,7 +26,7 @@
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <div class="sidebar pt-12">
         <div class="circle mb-5"></div>
-        <p class="title mb-5">Company Name</p>
+        <p class="title mb-5">COMPANY NAME</p>
         <hr class="mb-12" />
       </div>
       <v-list nav dense>
