@@ -232,6 +232,9 @@ export default {
         id: doc.id,
         ...doc.data(),
       }));
+
+      this.driver = [];
+      this.vehicle = []
     },
     async downloadFile() {
       let data = [
